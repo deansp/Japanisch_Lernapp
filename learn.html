@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Japanisch lernen</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="style.css?v=6">
+</head>
+<body>
+  <div class="container study-page">
+    <header class="study-top">
+      <a class="back-link" href="index.html">Home · <span id="levelName">Basics</span></a>
+      <label class="language-switch" aria-label="Sprache auf der Vorderseite">
+        <span>DE</span>
+        <input id="languageToggle" type="checkbox" checked>
+        <span class="switch-track" aria-hidden="true"></span>
+        <span>JP</span>
+      </label>
+    </header>
+
+    <main class="study-area">
+      <div class="study-stack">
+        <div class="card-shell">
+          <button id="flashcard" class="flashcard" type="button" aria-label="Karte umdrehen">
+            <span class="card-face card-front">
+              <span id="frontWord" class="main-word">Lade...</span>
+              <span id="frontReading" class="reading"></span>
+            </span>
+            <span class="card-face card-back">
+              <span id="backWord" class="main-word"></span>
+              <span id="backReading" class="reading"></span>
+            </span>
+          </button>
+          <div class="audio-controls" aria-label="Aussprache">
+            <button id="slowSpeakButton" class="speak-button slow-speak-button" type="button" aria-label="Japanisches Wort sehr langsam vorlesen" title="Sehr langsam anhören">🐌</button>
+            <button id="speakButton" class="speak-button" type="button" aria-label="Japanisches Wort vorlesen" title="Aussprache anhören">
+              <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 5 6 9H2v6h4l5 4V5Z"></path>
+                <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="answer-controls" aria-label="Antwort bewerten">
+          <button id="wrongButton" class="answer-button answer-wrong" type="button" aria-label="Noch nicht gewusst">
+            <span aria-hidden="true">←</span>
+            <small>Noch nicht</small>
+          </button>
+          <button id="correctButton" class="answer-button answer-correct" type="button" aria-label="Wort gewusst">
+            <small>Kann ich</small>
+            <span aria-hidden="true">→</span>
+          </button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div id="completion" class="completion" hidden>
+    <section class="completion-box">
+      <p class="eyebrow">Lerneinheit geschafft</p>
+      <h2>すごい！</h2>
+      <p>Sehr gut gemacht. Du hast alle Wörter geschafft.</p>
+      <a class="button" href="index.html">Zur Startseite</a>
+    </section>
+  </div>
+
+  <script src="js/storage.js?v=6"></script>
+  <script src="js/learn.js?v=6"></script>
+</body>
+</html>

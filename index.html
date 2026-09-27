@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Japanisch lernen</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="style.css?v=6">
+</head>
+<body>
+  <main class="container home">
+    <header class="hero">
+      <p class="eyebrow">Deans kleiner Einstieg in</p>
+      <h1>Japanisch</h1>
+      <p class="intro">Wichtige Wörter für eure Japanreise. Ganz ruhig und Wort für Wort.</p>
+    </header>
+
+    <section class="stats" aria-label="Lernstand">
+      <div><strong id="openCards">29</strong><span>noch zu lernen</span></div>
+      <div><strong id="knownCards">0</strong><span>schon gelernt</span></div>
+    </section>
+
+    <nav class="actions" aria-label="Level auswählen">
+      <div id="levelList" class="level-list"></div>
+      <a class="text-link" href="words.html">Alle Reisewörter ansehen</a>
+      <button id="resetProgress" class="text-button" type="button">Fortschritt zurücksetzen</button>
+    </nav>
+  </main>
+
+  <script src="js/storage.js?v=6"></script>
+  <script src="js/app.js?v=6"></script>
+</body>
+</html>
