@@ -16,7 +16,7 @@ document.getElementById("levelName").textContent = level.name;
 const SWIPE_DISTANCE = 42;
 const SWIPE_VELOCITY = 0.26;
 const TAP_DISTANCE = 12;
-const MIN_CARD_FONT_SIZE = 14;
+const MIN_CARD_FONT_SIZE = 11;
 let queue = [];
 let currentCard = null;
 let startX = 0;
@@ -67,11 +67,22 @@ function setAnswerControlsEnabled(enabled) {
 }
 
 function fitTextToCard(element) {
-  element.style.fontSize = "";
-  let fontSize = Number.parseFloat(window.getComputedStyle(element).fontSize);
-  if (!Number.isFinite(fontSize) || element.clientWidth === 0) return;
+  const face = element.closest(".card-face");
+  if (!face) return;
 
-  while (element.scrollWidth > element.clientWidth && fontSize > MIN_CARD_FONT_SIZE) {
+  const faceStyle = window.getComputedStyle(face);
+  const availableWidth = face.clientWidth
+    - Number.parseFloat(faceStyle.paddingLeft)
+    - Number.parseFloat(faceStyle.paddingRight)
+    - 4;
+
+  element.style.fontSize = "";
+  element.style.width = `${availableWidth}px`;
+  element.style.maxWidth = `${availableWidth}px`;
+  let fontSize = Number.parseFloat(window.getComputedStyle(element).fontSize);
+  if (!Number.isFinite(fontSize) || availableWidth <= 0) return;
+
+  while (element.scrollWidth > availableWidth && fontSize > MIN_CARD_FONT_SIZE) {
     fontSize -= 1;
     element.style.fontSize = `${fontSize}px`;
   }
@@ -79,7 +90,9 @@ function fitTextToCard(element) {
 
 function fitVisibleCardText() {
   window.requestAnimationFrame(() => {
-    [frontWord, frontReading, backWord, backReading].forEach(fitTextToCard);
+    window.requestAnimationFrame(() => {
+      [frontWord, frontReading, backWord, backReading].forEach(fitTextToCard);
+    });
   });
 }
 
@@ -187,6 +200,7 @@ languageToggle.addEventListener("change", () => {
 });
 
 window.addEventListener("resize", fitVisibleCardText);
+document.fonts?.ready.then(fitVisibleCardText);
 
 speakButton.addEventListener("click", () => speakJapaneseWord(1));
 slowSpeakButton.addEventListener("click", () => speakJapaneseWord(0.62));
