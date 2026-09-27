@@ -1,4 +1,5 @@
 const flashcard = document.getElementById("flashcard");
+const cardShell = document.querySelector(".card-shell");
 const frontWord = document.getElementById("frontWord");
 const frontReading = document.getElementById("frontReading");
 const backWord = document.getElementById("backWord");
@@ -9,8 +10,9 @@ const speakButton = document.getElementById("speakButton");
 const slowSpeakButton = document.getElementById("slowSpeakButton");
 const wrongButton = document.getElementById("wrongButton");
 const correctButton = document.getElementById("correctButton");
-const selectedLevel = Math.min(LEVELS.length, Math.max(1, Number(new URLSearchParams(window.location.search).get("level")) || 1));
-const level = LEVELS.find(item => item.id === selectedLevel) || LEVELS[0];
+const requestedLevel = Number(new URLSearchParams(window.location.search).get("level"));
+const level = LEVELS.find(item => item.id === requestedLevel) || LEVELS[0];
+const selectedLevel = level.id;
 document.getElementById("levelName").textContent = level.name;
 
 const SWIPE_DISTANCE = 42;
@@ -25,6 +27,14 @@ let startTime = 0;
 let dragging = false;
 let animating = false;
 let currentAudio = null;
+let activePointer = null;
+
+function cancelDrag() {
+  dragging = false;
+  activePointer = null;
+  cardShell.style.transform = "";
+  cardShell.classList.remove("is-dragging", "pull-left", "pull-right");
+}
 
 function setSpeakingState(isSpeaking) {
   speakButton.classList.toggle("is-speaking", isSpeaking);
@@ -32,7 +42,7 @@ function setSpeakingState(isSpeaking) {
 }
 
 function speakJapaneseWord(rate = 1) {
-  if (!currentCard) return;
+  if (!currentCard || animating) return;
 
   if (currentAudio) {
     currentAudio.pause();
@@ -43,9 +53,11 @@ function speakJapaneseWord(rate = 1) {
   currentAudio.playbackRate = rate;
   currentAudio.preservesPitch = true;
   setSpeakingState(true);
-  currentAudio.addEventListener("ended", () => setSpeakingState(false), { once: true });
-  currentAudio.addEventListener("error", () => setSpeakingState(false), { once: true });
-  currentAudio.play().catch(() => setSpeakingState(false));
+  const audio = currentAudio;
+  const finish = () => { if (currentAudio === audio) setSpeakingState(false); };
+  audio.addEventListener("ended", finish, { once: true });
+  audio.addEventListener("error", finish, { once: true });
+  audio.play().catch(finish);
 }
 
 function shuffle(items) {
@@ -64,6 +76,9 @@ function startsWithJapanese() {
 function setAnswerControlsEnabled(enabled) {
   wrongButton.disabled = !enabled;
   correctButton.disabled = !enabled;
+  languageToggle.disabled = !enabled;
+  speakButton.disabled = !enabled;
+  slowSpeakButton.disabled = !enabled;
 }
 
 function fitTextToCard(element) {
@@ -75,6 +90,8 @@ function fitTextToCard(element) {
     - Number.parseFloat(faceStyle.paddingLeft)
     - Number.parseFloat(faceStyle.paddingRight)
     - 4;
+
+  if (availableWidth <= 0) return;
 
   element.style.fontSize = "";
   element.style.width = `${availableWidth}px`;
@@ -97,17 +114,21 @@ function fitVisibleCardText() {
 }
 
 function renderCard() {
+  cancelDrag();
   const cards = new Map(getLevelCards(selectedLevel).map(card => [card.id, card]));
   queue = queue.filter(id => cards.has(id));
   currentCard = queue.length ? cards.get(queue[0]) : null;
+  cardShell.className = "card-shell";
+  cardShell.style.transform = "";
   flashcard.className = "flashcard";
-  flashcard.style.transform = "";
 
   if (!currentCard) {
     speakButton.disabled = true;
     slowSpeakButton.disabled = true;
     setAnswerControlsEnabled(false);
     completion.hidden = false;
+    document.querySelector(".study-page").inert = true;
+    completion.querySelector("a").focus();
     return;
   }
 
@@ -128,13 +149,14 @@ function renderCard() {
 function answer(wasCorrect) {
   if (!currentCard || animating) return;
   animating = true;
+  cancelDrag();
   setAnswerControlsEnabled(false);
   if (currentAudio) {
     currentAudio.pause();
     setSpeakingState(false);
   }
-  flashcard.style.transform = "";
-  flashcard.classList.add(wasCorrect ? "swipe-right" : "swipe-left");
+  cardShell.style.transform = "";
+  cardShell.classList.add(wasCorrect ? "swipe-right" : "swipe-left");
 
   window.setTimeout(() => {
     const [answeredId, ...rest] = queue;
@@ -146,53 +168,63 @@ function answer(wasCorrect) {
 }
 
 flashcard.addEventListener("pointerdown", event => {
-  if (!currentCard || animating) return;
+  if (!currentCard || animating || dragging || event.isPrimary === false || event.button !== 0) return;
+  activePointer = event.pointerId;
   startX = event.clientX;
   startY = event.clientY;
   startTime = Date.now();
   dragging = true;
-  flashcard.classList.add("is-dragging");
+  cardShell.classList.remove("is-returning");
+  cardShell.classList.add("is-dragging");
   flashcard.setPointerCapture?.(event.pointerId);
 });
 
 flashcard.addEventListener("pointermove", event => {
-  if (!dragging || !currentCard || animating) return;
+  if (!dragging || event.pointerId !== activePointer || !currentCard || animating) return;
   const deltaX = event.clientX - startX;
   const deltaY = event.clientY - startY;
+  if (Math.abs(deltaY) > Math.abs(deltaX) * 1.5 && Math.abs(deltaY) > 16) {
+    cancelDrag();
+    return;
+  }
   if (Math.abs(deltaX) > Math.abs(deltaY)) event.preventDefault();
   const rotation = Math.max(-12, Math.min(12, deltaX / 16));
-  flashcard.style.transform = `translateX(${deltaX * 1.16}px) rotate(${rotation}deg)`;
+  cardShell.style.transform = `translateX(${deltaX * 1.16}px) rotate(${rotation}deg)`;
+  cardShell.classList.toggle("pull-right", deltaX > 20);
+  cardShell.classList.toggle("pull-left", deltaX < -20);
 });
 
 flashcard.addEventListener("pointerup", event => {
-  if (!dragging || !currentCard || animating) return;
+  if (!dragging || event.pointerId !== activePointer || !currentCard || animating) return;
   dragging = false;
-  flashcard.classList.remove("is-dragging");
-  flashcard.releasePointerCapture?.(event.pointerId);
+  activePointer = null;
+  cardShell.classList.remove("is-dragging", "pull-left", "pull-right");
+  if (flashcard.hasPointerCapture?.(event.pointerId)) flashcard.releasePointerCapture(event.pointerId);
 
   const deltaX = event.clientX - startX;
   const deltaY = event.clientY - startY;
   const velocity = Math.abs(deltaX) / Math.max(1, Date.now() - startTime);
   const horizontal = Math.abs(deltaX) > Math.abs(deltaY) * 0.8;
 
-  if (horizontal && (Math.abs(deltaX) > SWIPE_DISTANCE || velocity > SWIPE_VELOCITY)) {
+  if (horizontal && (Math.abs(deltaX) > SWIPE_DISTANCE || (Math.abs(deltaX) >= 24 && velocity > SWIPE_VELOCITY))) {
     answer(deltaX > 0);
     return;
   }
 
-  flashcard.style.transform = "";
-  flashcard.classList.add("is-returning");
+  cardShell.style.transform = "";
+  cardShell.classList.add("is-returning");
   if (Math.abs(deltaX) < TAP_DISTANCE && Math.abs(deltaY) < TAP_DISTANCE) {
     flashcard.classList.toggle("is-flipped");
   }
-  window.setTimeout(() => flashcard.classList.remove("is-returning"), 180);
+  window.setTimeout(() => cardShell.classList.remove("is-returning"), 180);
 });
 
-flashcard.addEventListener("pointercancel", () => {
-  dragging = false;
-  flashcard.style.transform = "";
-  flashcard.classList.remove("is-dragging");
+flashcard.addEventListener("pointercancel", cancelDrag);
+flashcard.addEventListener("lostpointercapture", () => { if (dragging) cancelDrag(); });
+flashcard.addEventListener("click", event => {
+  if (event.detail === 0 && currentCard && !animating) flashcard.classList.toggle("is-flipped");
 });
+window.addEventListener("pagehide", () => currentAudio?.pause());
 
 languageToggle.addEventListener("change", () => {
   localStorage.setItem(LANGUAGE_KEY, startsWithJapanese() ? "jp" : "de");
