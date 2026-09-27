@@ -16,6 +16,7 @@ document.getElementById("levelName").textContent = level.name;
 const SWIPE_DISTANCE = 42;
 const SWIPE_VELOCITY = 0.26;
 const TAP_DISTANCE = 12;
+const MIN_CARD_FONT_SIZE = 14;
 let queue = [];
 let currentCard = null;
 let startX = 0;
@@ -65,6 +66,23 @@ function setAnswerControlsEnabled(enabled) {
   correctButton.disabled = !enabled;
 }
 
+function fitTextToCard(element) {
+  element.style.fontSize = "";
+  let fontSize = Number.parseFloat(window.getComputedStyle(element).fontSize);
+  if (!Number.isFinite(fontSize) || element.clientWidth === 0) return;
+
+  while (element.scrollWidth > element.clientWidth && fontSize > MIN_CARD_FONT_SIZE) {
+    fontSize -= 1;
+    element.style.fontSize = `${fontSize}px`;
+  }
+}
+
+function fitVisibleCardText() {
+  window.requestAnimationFrame(() => {
+    [frontWord, frontReading, backWord, backReading].forEach(fitTextToCard);
+  });
+}
+
 function renderCard() {
   const cards = new Map(getLevelCards(selectedLevel).map(card => [card.id, card]));
   queue = queue.filter(id => cards.has(id));
@@ -91,6 +109,7 @@ function renderCard() {
   flashcard.querySelector(".card-front").classList.toggle("is-japanese", japaneseFirst);
   flashcard.querySelector(".card-back").classList.toggle("is-japanese", !japaneseFirst);
   document.body.dataset.stage = String(Math.min(currentCard.stage, MAX_STAGE));
+  fitVisibleCardText();
 }
 
 function answer(wasCorrect) {
@@ -166,6 +185,8 @@ languageToggle.addEventListener("change", () => {
   localStorage.setItem(LANGUAGE_KEY, startsWithJapanese() ? "jp" : "de");
   renderCard();
 });
+
+window.addEventListener("resize", fitVisibleCardText);
 
 speakButton.addEventListener("click", () => speakJapaneseWord(1));
 slowSpeakButton.addEventListener("click", () => speakJapaneseWord(0.62));
