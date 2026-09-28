@@ -47,7 +47,8 @@ const DEFAULT_CARDS = [
   ["チーズをのせて焼いてください。", "chiizu o nosete yaite kudasai.", "Gerne mit Käse überbacken", 5],
   ["この辺で一番おしゃれな温泉はどこですか？", "kono hen de ichiban oshare na onsen wa doko desu ka?", "Wo gibt’s hier die schicksten Onsen?", 5],
   ["もう一か月長く滞在したいのですが、可能ですか？", "mou ikkagetsu nagaku taizai shitai no desu ga, kanou desu ka?", "Wir würden gern einen Monat länger bleiben – lässt sich das machen?", 5],
-  ["こちらの素敵な図書館で、ハンサムで魅力的な部門長のための求人はありますか？", "kochira no suteki na toshokan de, hansamu de miryokuteki na bumonchou no tame no kyuujin wa arimasu ka?", "Gibt es in eurer schönen Bibliothek eine freie Stelle für einen gutaussehenden, charmanten Referatsleiter?", 5]
+  ["こちらの素敵な図書館で、ハンサムで魅力的な部門長のための求人はありますか？", "kochira no suteki na toshokan de, hansamu de miryokuteki na bumonchou no tame no kyuujin wa arimasu ka?", "Gibt es in eurer schönen Bibliothek eine freie Stelle für einen gutaussehenden, charmanten Referatsleiter?", 5],
+  ["おならしたら、うんちもちょっと出ちゃった。", "onara shitara, unchi mo chotto dechatta.", "Ich habe geschurzt …", 5]
 ].map(([japanese, reading, german, level], index) => ({
   id: `travel-${index + 1}`,
   japanese,
