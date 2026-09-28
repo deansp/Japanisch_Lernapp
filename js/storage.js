@@ -6,7 +6,8 @@ const LEVELS = [
   { id: 1, name: "Basics", description: "Begrüßen, bedanken und höflich bleiben" },
   { id: 2, name: "Verständigung", description: "Nachfragen und besser verstanden werden" },
   { id: 3, name: "Orientierung", description: "Bahnhof, Toilette und den Weg finden" },
-  { id: 4, name: "Essen & Einkaufen", description: "Bestellen, bezahlen und zählen" }
+  { id: 4, name: "Essen & Einkaufen", description: "Bestellen, bezahlen und zählen" },
+  { id: 5, name: "Günnis Niveau", description: "Mo-Bärchen, doppelte Portionen und extra Käse" }
 ];
 
 const DEFAULT_CARDS = [
@@ -38,7 +39,15 @@ const DEFAULT_CARDS = [
   ["いくらですか？", "ikura desu ka?", "Wie viel kostet es?", 4],
   ["カードは使えますか？", "kaado wa tsukaemasu ka?", "Kann ich mit Karte bezahlen?", 4],
   ["一つ", "hitotsu", "ein Stück", 4],
-  ["二つ", "futatsu", "zwei Stück", 4]
+  ["二つ", "futatsu", "zwei Stück", 4],
+  ["これはヴィーガンですか？", "kore wa viigan desu ka?", "Ist das vegan?", 5],
+  ["モーくまちゃん、愛してるよ。", "moo-kuma-chan, aishiteru yo.", "Ich liebe dich mein Mo-Bärchen", 5],
+  ["ディーンとカトリンは本当にかっこいいね。", "diin to katorin wa hontou ni kakkoii ne.", "Dean und Katrin sind schon echt cool", 5],
+  ["四人分で、量は二倍にしてください。", "yoninbun de, ryou wa nibai ni shite kudasai.", "Bitte für 4 Personen und die doppelte Menge", 5],
+  ["チーズをのせて焼いてください。", "chiizu o nosete yaite kudasai.", "Gerne mit Käse überbacken", 5],
+  ["この辺で一番おしゃれな温泉はどこですか？", "kono hen de ichiban oshare na onsen wa doko desu ka?", "Wo gibt’s hier die schicksten Onsen?", 5],
+  ["もう一か月長く滞在したいのですが、可能ですか？", "mou ikkagetsu nagaku taizai shitai no desu ga, kanou desu ka?", "Wir würden gern einen Monat länger bleiben – lässt sich das machen?", 5],
+  ["こちらの素敵な図書館で、ハンサムで魅力的な部門長のための求人はありますか？", "kochira no suteki na toshokan de, hansamu de miryokuteki na bumonchou no tame no kyuujin wa arimasu ka?", "Gibt es in eurer schönen Bibliothek eine freie Stelle für einen gutaussehenden, charmanten Referatsleiter?", 5]
 ].map(([japanese, reading, german, level], index) => ({
   id: `travel-${index + 1}`,
   japanese,

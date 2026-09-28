@@ -16,7 +16,7 @@ function renderHome() {
     link.className = `level-button level-${level.id}`;
     link.href = `learn.html?level=${level.id}`;
     link.innerHTML = `
-      <span class="level-kanji" lang="ja" aria-hidden="true">${["一", "二", "三", "四"][level.id - 1]}</span>
+      <span class="level-kanji" lang="ja" aria-hidden="true">${["一", "二", "三", "四", "五"][level.id - 1]}</span>
       <span class="level-number">Level ${level.id}</span>
       <strong>${level.name}</strong>
       <span>${level.description}</span>

@@ -93,13 +93,21 @@ function fitTextToCard(element) {
 
   if (availableWidth <= 0) return;
 
+  const isJapaneseText = face.classList.contains("is-japanese") && element.classList.contains("main-word");
+  const isLong = element.textContent.length > (isJapaneseText ? 22 : 50);
+  element.classList.toggle("long-sentence", isLong);
   element.style.fontSize = "";
   element.style.width = `${availableWidth}px`;
   element.style.maxWidth = `${availableWidth}px`;
   let fontSize = Number.parseFloat(window.getComputedStyle(element).fontSize);
   if (!Number.isFinite(fontSize) || availableWidth <= 0) return;
 
-  while (element.scrollWidth > availableWidth && fontSize > MIN_CARD_FONT_SIZE) {
+  const hasReading = face.classList.contains("is-japanese");
+  const contentHeight = face.clientHeight - 120;
+  const heightBudget = hasReading
+    ? (element.classList.contains("reading") ? contentHeight * 0.65 : contentHeight * 0.35)
+    : contentHeight;
+  while ((element.scrollWidth > availableWidth || (isLong && element.scrollHeight > heightBudget)) && fontSize > MIN_CARD_FONT_SIZE) {
     fontSize -= 1;
     element.style.fontSize = `${fontSize}px`;
   }

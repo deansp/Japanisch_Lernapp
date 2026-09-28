@@ -125,6 +125,7 @@ h2 { font-size: 2.8rem; }
 .level-button.level-2 { background: rgba(241, 227, 188, 0.72); }
 .level-button.level-3 { background: rgba(214, 229, 211, 0.76); }
 .level-button.level-4 { background: rgba(219, 215, 232, 0.74); }
+.level-button.level-5 { background: rgba(204, 226, 229, 0.74); }
 .level-kanji {
   position: absolute;
   right: 15px;
@@ -434,6 +435,16 @@ h2 { font-size: 2.8rem; }
 }
 
 .reading:empty { display: none; }
+.card-face .long-sentence,
+.card-face.is-japanese .reading.long-sentence {
+  white-space: normal;
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: none;
+  font-size: 1.4rem;
+  line-height: 1.45;
+}
+.card-face.is-japanese .main-word.long-sentence { white-space: normal; font-size: 1rem; line-height: 1.5; }
 :where(a, button):focus-visible { outline: 2px solid var(--indigo); outline-offset: 5px; }
 .level-button:focus-visible { outline: 2px solid var(--indigo); }
 .word-audio-button { min-width: 44px; min-height: 44px; }
