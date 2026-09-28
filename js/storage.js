@@ -20,8 +20,8 @@ const DEFAULT_CARDS = [
   ["分かりません", "wakarimasen", "Ich verstehe nicht", 2],
   ["日本語が話せません", "nihongo ga hanasemasen", "Ich spreche kein Japanisch", 2],
   ["英語を話せますか？", "eigo o hanasemasu ka?", "Sprechen Sie Englisch?", 2],
-  ["もう一度お願いします", "mou ichido onegaishimasu", "Bitte noch einmal", 2],
-  ["ゆっくりお願いします", "yukkuri onegaishimasu", "Bitte langsam", 2],
+  ["キスして！", "kisu shite!", "Küss mich!", 2, "understanding-kiss"],
+  ["あなたのことを理解できたらいいのに。", "anata no koto o rikai dekitara ii noni.", "Ich wünsche, ich würde dich verstehen", 2, "understanding-wish"],
   ["大丈夫です", "daijoubu desu", "Es ist in Ordnung", 2],
   ["これは何ですか？", "kore wa nan desu ka?", "Was ist das?", 2],
   ["どこですか？", "doko desu ka?", "Wo ist es?", 3],
@@ -48,9 +48,12 @@ const DEFAULT_CARDS = [
   ["この辺で一番おしゃれな温泉はどこですか？", "kono hen de ichiban oshare na onsen wa doko desu ka?", "Wo gibt’s hier die schicksten Onsen?", 5],
   ["もう一か月長く滞在したいのですが、可能ですか？", "mou ikkagetsu nagaku taizai shitai no desu ga, kanou desu ka?", "Wir würden gern einen Monat länger bleiben – lässt sich das machen?", 5],
   ["こちらの素敵な図書館で、ハンサムで魅力的な部門長のための求人はありますか？", "kochira no suteki na toshokan de, hansamu de miryokuteki na bumonchou no tame no kyuujin wa arimasu ka?", "Gibt es in eurer schönen Bibliothek eine freie Stelle für einen gutaussehenden, charmanten Referatsleiter?", 5],
-  ["おならしたら、うんちもちょっと出ちゃった。", "onara shitara, unchi mo chotto dechatta.", "Ich habe geschurzt …", 5]
-].map(([japanese, reading, german, level], index) => ({
-  id: `travel-${index + 1}`,
+  ["おならしたら、うんちもちょっと出ちゃった。", "onara shitara, unchi mo chotto dechatta.", "Ich habe geschurzt …", 5],
+  ["これはベジタリアン向けですか？", "kore wa bejitarian muke desu ka?", "Ist das vegetarisch?", 4],
+  ["エスプレッソとアメリカーノを一杯ずついただけますか？", "esupuresso to amerikaano o ippai zutsu itadakemasu ka?", "Könnte ich bitte einen Espresso und einen Americano bekommen?", 4],
+  ["まずい料理にはアレルギーがあるんです。", "mazui ryouri ni wa arerugii ga arun desu.", "Ich bin allergisch gegen schlechtes Essen.", 4]
+].map(([japanese, reading, german, level, customId], index) => ({
+  id: customId || `travel-${index + 1}`,
   japanese,
   reading,
   german,
